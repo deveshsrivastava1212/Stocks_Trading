@@ -7,11 +7,16 @@ const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 require("./passport.js")(passport);
-
+const cors = require('cors')
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors({
+  origin:"*",
+  methods:['GET', 'POST'],
+  allowedHeaders:['Content-Type', 'Authorization']
+}))
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(

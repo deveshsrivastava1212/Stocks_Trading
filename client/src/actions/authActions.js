@@ -91,7 +91,7 @@ export const login = ({ username, password }) => dispatch => {
   });
 
   axios
-    .post("/api/auth", body, config)
+    .post("http://localhost:5000/api/auth", body, config)
     .then(res => {
       const user = res.data;
       if (user.role === "admin") {

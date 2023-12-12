@@ -2,6 +2,6 @@
     "mongoURI": "mongodb+srv://admin_dev:123admin@cluster0.468rbz2.mongodb.net/stocks?retryWrites=true&w=majority",
     "jwtSecret": "mt_myJwtSecret",
     "orderTypes": ["market", "limit", "stop", "buy-stop"],
-    "IEXCloudToken": "pk_06e3166c3303450b969c872b1fb6a9ce",
+    "IEXCloudToken": "pk_06dfdfeaef8241de8e393c1e85dc7300",
     "cookieSecret": "Cheese"
 }

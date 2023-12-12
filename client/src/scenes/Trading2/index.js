@@ -30,6 +30,7 @@ import {
 
 
 class Trading extends Component {
+    
     state = {
         sidebar: false
     };

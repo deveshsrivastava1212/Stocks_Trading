@@ -7,7 +7,6 @@ const User = require("../../models/User");
 
 // @route   POST api/trade
 // @desc    Send Buy Request
-// @access  Private
 router.post("/", isLoggedIn, async (req, res) => {
     let { orderType, ticker } = req.body;
     ticker = ticker.toUpperCase();
@@ -112,38 +111,102 @@ router.post("/", isLoggedIn, async (req, res) => {
     }
 });
 
+// @route   GET api/trade/:ticker
+// @desc    Send Get Request
+router.get("/:ticker",isLoggedIn, async(req,res)=>{
+    try{
+        const { ticker } = req.params;
+        const token = config.get("IEXCloudToken");
+        console.log(ticker,token)
+        const response = await axios.get(`https://cloud.iexapis.com/stable/stock/${ticker}/previous?token=${token}`)
+
+        if(response && response.data)
+        {
+            const stocksData = response.data;
+            console.log(stocksData);
+            return res.status(200).json(stocksData);
+        } else {
+            return res.status(404).json({error: "Stock Data Not Found..."})
+        }
+    } catch (err) {
+        console.error("Error: ", err)
+        return res.status(404).json({err: "Stock Data Not Found"})
+    }
+})
+
+//@route GET api/trade/news
+//@desc Send the News from date to date
+router.get("/news", isLoggedIn, async (req, res) => {
+    try {
+        const { ticker,from } = req.query;
+        const token = config.get("IEXCloudToken");
+
+        if (from) {
+            const apiUrl = `https://cloud.iexapis.com/stable/stock/${ticker}/news/last/${from}?token=${token}`;
+            const response = await axios.get(apiUrl);
+            console.log(response.data)
+            if (response.status === 200 && response.data && response.data.length > 0) {
+                console.log(response.data);
+                return res.status(200).json(response.data);
+            } else {
+                return res.status(404).json({ error: "No news found for the specified dates." });
+            }
+        } else {
+            return res.status(400).json({ error: "Please provide valid 'from' and 'to' date parameters." });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).json({ error: "Server Error" });
+    }
+});
+
 // @route   POST api/trade/sell
 // @desc    Send Sell Request
-// @access  Private
 router.post("/sell", async (req, res) => {
-    const { ticker } = req.body;
-    const qty = parseInt(req.body['qty']);
-    const token = config.get("IEXCloudToken");
-    // if qty is below 0 or above 100, return bad req
-    if (qty < 1 || 100 < qty) return res.status(400).json({ msg: "Sale quantity must be between 1 and 100" });
-    if (!Number.isInteger(qty)) return res.status(400).json({ msg: "Purchase quantity must be an integer" });
     try {
-        let user = await User.findById(req.user._id);
+        const { ticker, qty } = req.body;
+        const parsedQty = parseInt(qty);
+
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ msg: 'User authentication failed' });
+        }
+
+        if (parsedQty < 1 || parsedQty > 100 || !Number.isInteger(parsedQty)) {
+            return res.status(400).json({ msg: "Sale quantity must be between 1 and 100 and an integer" });
+        }
+
+        const token = config.get("IEXCloudToken");
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(400).json({ msg: "User not found" });
+        }
+
         let index = null;
         for (let i = 0; i < user.stocks.length; i++) {
             if (user.stocks[i].ticker.toUpperCase() === ticker.toUpperCase()) {
                 index = i;
-            };
+                break;
+            }
         }
-        console.log(index);
-        if (!index) return res.status(400).json({ msg: "You do not own shares of that ticker" });
 
-        let stock = user.stocks[index];
-        if (stock.qty < qty) return res.status(400).json({ msg: "You do not own enough shares of that ticker" });
+        if (index === null) {
+            return res.status(400).json({ msg: "You do not own shares of that ticker" });
+        }
 
-        let axiosRes = await axios.get(`https://cloud.iexapis.com/stable/stock/${ticker}/previous?token=${token}`);
+        const stock = user.stocks[index];
+        if (stock.qty < parsedQty) {
+            return res.status(400).json({ msg: "You do not own enough shares of that ticker" });
+        }
+
+        const axiosRes = await axios.get(`https://cloud.iexapis.com/stable/stock/${ticker}/previous?token=${token}`);
         const { close } = axiosRes.data;
 
-        let oldQty = stock.qty;
-        stock.qty = stock.qty - qty;
+        const oldQty = stock.qty;
+        stock.qty -= parsedQty;
 
-        let newBalance = user.balance + qty * close;
-        let newStocks = user.stocks;
+        const newBalance = user.balance + parsedQty * close;
+        const newStocks = [...user.stocks];
         newStocks[index] = stock;
 
         await User.updateOne(
@@ -154,15 +217,18 @@ router.post("/sell", async (req, res) => {
                     stocks: newStocks
                 }
             }
-        )
-        user = await User.findById(req.user._id);
-        req.session.passport.user = user;
-        res.status(200).json({ msg: "Sale successful", stocks: newStocks, balance: newBalance });
+        );
 
+        const updatedUser = await User.findById(req.user._id);
+        req.session.passport.user = updatedUser;
+
+        res.status(200).json({ msg: "Sale successful", stocks: newStocks, balance: newBalance });
     } catch (e) {
-        console.log(e);
+        console.error(e);
+        res.status(500).json({ msg: "Internal server error" });
     }
 });
+
 
 function isLoggedIn(req, res, next) {
     if (req.session.passport !== undefined) {
