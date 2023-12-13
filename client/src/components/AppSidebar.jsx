@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Trade from "@material-ui/icons/Repeat";
 import { connect } from 'react-redux';
 import { logout } from "./../actions/authActions";
 import logo from "./images/logo.png";
@@ -51,8 +50,12 @@ class AppSidebar extends Component {
                 </div>
                 <div className={sidenavLinkWrapper}>
                     <a href="/trading" className={sidenavLink}>
-                        <Trade className={linkIcon} style={{fontSize: "28px"}} />
                         <div className={linkText}>Trade</div>
+                    </a>
+                </div>
+                <div className={sidenavLinkWrapper}>
+                    <a href="/profile" className={sidenavLink}>
+                        <div className={linkText}>Profile</div>
                     </a>
                 </div>
             </Col>

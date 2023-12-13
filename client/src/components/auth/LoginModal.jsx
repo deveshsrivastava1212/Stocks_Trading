@@ -64,7 +64,7 @@ class LoginModal extends Component {
         // Clear errors
         this.props.clearErrors();
 
-        this.setState({
+              this.setState({
             modal: !this.state.modal
         });
     }

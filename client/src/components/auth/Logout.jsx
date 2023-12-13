@@ -4,7 +4,7 @@ import { logout } from "../../actions/authActions";
 import { NavLink } from "reactstrap";
 import PropTypes from "prop-types";
 
-import { link } from "../../css/navbar.module.css";
+import { logout_link } from "../../css/navbar.module.css";
 
 class Logout extends Component {
   static propTypes = {
@@ -14,7 +14,7 @@ class Logout extends Component {
   render() {
     return (
       <React.Fragment>
-        <NavLink style={{color : "white !important"}} onClick={this.props.logout} href="#" className={link}>
+        <NavLink  onClick={this.props.logout} href="#" className={logout_link}>
           Logout
         </NavLink>
 

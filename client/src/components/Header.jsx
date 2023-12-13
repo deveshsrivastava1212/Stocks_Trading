@@ -34,32 +34,8 @@ class Header extends Component {
                             Trading
                         </NavLink>
                         <Logout />
-                        <NavItem>
-                    </NavItem>
                         </div>
                     </div>
-                </Col>
-                <Col lg={8}>
-                    <NavItem>
-                        <span className="navbar-text mr-3">
-                            <strong>Welcome</strong>
-                            {/* <strong>{user ? `Welcome ${user.userName}` : ''}</strong> */}
-
-                        </span>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="/dashboard" style={(this.props.currentLink === "/dashboard") ? { color: 'black' } : null}>
-                            Dashboard
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="/trading" style={(this.props.currentLink === "/trading") ? { color: 'black' } : null}>
-                            Trading
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <Logout />
-                    </NavItem>
                 </Col>
             </Row>
         );

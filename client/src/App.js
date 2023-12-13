@@ -15,6 +15,7 @@ import Error404 from "./scenes/Error404";
 import Trading from "./scenes/Trading2";
 import Dashboard from "./scenes/Dashboard";
 import Admin from "./scenes/Admin";
+import Profile from "./scenes/Profile";
 
 export const history = createBrowserHistory();
 
@@ -39,6 +40,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home2} />
             <Route exact path="/trading" component={Trading} />
+            <Route exact path="/profile" component={Profile} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/admin" component={Admin} />
             <Route exact path="*" component={Error404} />

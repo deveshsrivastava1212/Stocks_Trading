@@ -39,3 +39,9 @@
     padding: 3% 5%;
 }
 
+.logout_link{
+    color: #4F4F4F;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    color: white;
+}

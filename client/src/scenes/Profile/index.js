@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import AppSidebar from "./../../components/AppSidebar";
 import MobileMenu from "../../components/MobileMenu";
-import Searchbar from "./components/Searchbar";
 import Header from "../../components/Header";
-import LineGraph from "./components/LineGraph";
-import GraphTypeControl from "./components/GraphTypeControl";
-import GraphPeriodControl from "./components/GraphPeriodControl";
-import StocksTable from "./components/StocksTable";
-import Watchlist from "./components/Watchlist";
-import BuyForm from "./components/Buy";
+// import LineGraph from "./components/LineGraph";
+// import GraphTypeControl from "./components/GraphTypeControl";
+// import GraphPeriodControl from "./components/GraphPeriodControl";
+// import StocksTable from "./components/StocksTable";
+// import Watchlist from "./components/Watchlist";
+// import BuyForm from "./components/Buy";
 // import SellForm from "./components/Sell";
 import { Redirect } from 'react-router-dom'
 import { loadUser } from "../../actions/authActions";
@@ -17,20 +16,28 @@ import PropTypes from "prop-types";
 import {
     Container,
     Row,
-    Col
+    Col,
+    
 } from "reactstrap";
 import {
     container,
     pageContent,
     graphSection,
     tableSection,
-    tradeSection
-} from "./trading.module.css";
+    tradeSection,
+    profileTitle
 
-class Trading extends Component {
+} from "./trading.module.css";
+import Searchbar from "../Trading2/components/Searchbar";
+import StocksTable from "../Trading2/components/StocksTable";
+
+class Profile extends Component {
 
     state = {
-        sidebar: false
+        sidebar: false,
+        style:  {
+        marginTop: 10, backgroundColor: "#FDFDFD", display: 'flex', flexDirection: 'row', alignItems: 'center', padding: "20px", borderRadius: '5px' 
+        }
     };
 
     componentDidMount() {
@@ -52,9 +59,12 @@ class Trading extends Component {
         this.setState({ sidebar: !this.state.sidebar });
     };
 
+    styleCard = {
+    }
+
     render() {
         if (this.props.isAuthenticated) {
-            return (<Redirect to="/trading" />)
+            return (<Redirect to="/profile" />)
         }
         return (
             <div className="d-flex justify-content-center">
@@ -74,27 +84,30 @@ class Trading extends Component {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col xl={9} style={{ marginTop: 15 }}>
-                                    <div className={graphSection}>
+                            
+                                <Col xl={12}>
                                         <Row>
-                                            <Col xs={12} md={5} lg={4} xl={3}>
-                                                <GraphTypeControl />
+                                            <Col xl={6}>
+                                                <div style={this.state.style} className={profileTitle}>
+                                                    <h5>
+                                                        Username
+                                                    </h5>
+                                                    <span>
+                                                        {this.props.auth.username}
+                                                    </span>
+                                                </div>
                                             </Col>
-                                            <Col xs={12} md={5} lg={4} xl={3}>
-                                                <GraphPeriodControl />
+                                            <Col xl={6}>
+                                                <div style={this.state.style} className={profileTitle}>
+                                                    <h5>
+                                                        Balance
+                                                    </h5>
+                                                    <span>
+                                                        {this.props.auth.balance}
+                                                    </span>
+                                                </div>
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <LineGraph />
-                                        </Row>
-                                    </div>
-                                </Col>
-                                <Col xl={3} style={{ marginTop: 15 }}>
-                                    <div className={tradeSection}>
-                                        <BuyForm />
-                                        {/* <SellForm /> */}
-                                    </div>
-
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 15 }}>
@@ -115,10 +128,11 @@ class Trading extends Component {
 
 const mapStateToProps = state => ({
     close: state.trading.close,
+    auth: state.auth
     // isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(
     mapStateToProps,
     { loadUser }
-)(Trading);
+)(Profile);
