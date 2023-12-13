@@ -42,8 +42,10 @@ export const handleTrade = (ticker, prices, qty, orderType) => {
 
 export const getStockPrice = ticker => {
   return (dispatch, getState) => {
+    const detail = "TIME_SERIES_DAILY";
+    const apiToken = "8DDN0XYY48K54AIW";
     return axios
-      .get(`https://cloud.iexapis.com/stable/stock/${ticker}/previous?token=pk_5187144627fe41f783caf3f0341d7f3e`)
+      .get(`https://www.alphavantage.co/query?function=${detail}&symbol=${ticker}&apikey=${apiToken}`)
       .then(res => {
         let closingPrice = res.data.close;
         dispatch({ type: CLEAR_TRADE_ERROR })

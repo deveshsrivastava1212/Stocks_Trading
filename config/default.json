@@ -3,5 +3,6 @@
     "jwtSecret": "mt_myJwtSecret",
     "orderTypes": ["market", "limit", "stop", "buy-stop"],
     "aplhaVantageAPI_Key": "8DDN0XYY48K54AIW",
-    "cookieSecret": "Cheese"
+    "cookieSecret": "Cheese",
+    "port":5000
 }

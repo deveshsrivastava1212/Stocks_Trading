@@ -11,20 +11,21 @@ import {
 } from "./types";
 
 // iex cloud api constants
-const baseURL = "https://cloud.iexapis.com";
-const apiToken = "pk_5187144627fe41f783caf3f0341d7f3e";
+const baseURL = "https://www.alphavantage.co";
+const apiToken = "8DDN0XYY48K54AIW";
 
-// Get graph data form iex cloud api
+// Get graph data form alpha vantage cloud api
 export const getGraphData = (ticker, graphPeriod) => dispatch => {
   dispatch({ type: LOADING_GRAPH_DATA });
 
   let graphLabels = [];
   let graphData = [];
   let graphTitle = `${ticker} Price`;
-
+  const detail = "TIME_SERIES_DAILY";
   axios
     .get(
-      `${baseURL}/stable/stock/${ticker}/chart/${graphPeriod}?token=${apiToken}`
+      //`${baseURL}/stable/stock/${ticker}/chart/${graphPeriod}?token=${apiToken}`
+      `${baseURL}/query?function=${detail}&symbol=${ticker}&apikey=${apiToken}`
     )
     .then(
       res => {

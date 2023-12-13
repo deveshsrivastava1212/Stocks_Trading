@@ -14,7 +14,7 @@ class Logout extends Component {
   render() {
     return (
       <React.Fragment>
-        <NavLink onClick={this.props.logout} href="#" className={link}>
+        <NavLink style={{color : "white !important"}} onClick={this.props.logout} href="#" className={link}>
           Logout
         </NavLink>
 

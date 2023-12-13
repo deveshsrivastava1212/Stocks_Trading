@@ -90,9 +90,33 @@ export const login = ({ username, password }) => dispatch => {
     password
   });
 
+  // axios
+  //   .post("http://localhost:5000/api/auth", body, config)
+  //   .then(res => {
+  //     const user = res.data;
+  //     if (user.role === "admin") {
+  //       console.log("You are admin!");
+  //       history.push("/admin");
+  //     } else {
+  //       dispatch({
+  //         type: LOGIN_SUCCESS,
+  //         payload: res.data
+  //       });
+  //       history.push("/trading");
+  //     }
+  //   })
+  //   .catch(err => {
+  //     dispatch(
+  //       returnErrors(err.response.data.msg, err.response.status, "LOGIN_FAIL")
+  //     );
+  //     dispatch({
+  //       type: LOGIN_FAIL
+  //     });
+  //   });
   axios
-    .post("http://localhost:5000/api/auth", body, config)
-    .then(res => {
+  .post("/api/auth/", body, config)
+  .then(res => {
+    if (res && res.data) {
       const user = res.data;
       if (user.role === "admin") {
         console.log("You are admin!");
@@ -104,15 +128,26 @@ export const login = ({ username, password }) => dispatch => {
         });
         history.push("/trading");
       }
-    })
-    .catch(err => {
+    } else {
+      // Handle the case where response or response data is missing
+      throw new Error("Invalid response received");
+    }
+  })
+  .catch(err => {
+    if (err.response) {
       dispatch(
         returnErrors(err.response.data.msg, err.response.status, "LOGIN_FAIL")
       );
-      dispatch({
-        type: LOGIN_FAIL
-      });
+    } else {
+      dispatch(
+        returnErrors("Network error or server unreachable", 500, "LOGIN_FAIL")
+      );
+    }
+    dispatch({
+      type: LOGIN_FAIL
     });
+  });
+
 };
 
 // Logout User
